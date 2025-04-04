@@ -249,15 +249,20 @@ function startHearts() {
 
   spawnRandomly();
 }
-
-function fitText(el, maxFont = 180, minFont = 120) {
+function fitText(el, maxFont = 180, minFont = 30) {
   let size = maxFont;
   el.style.fontSize = `${size}px`;
-  while (el.scrollWidth > el.clientWidth && size > minFont) {
+  el.style.whiteSpace = "nowrap";
+  el.style.display = "inline-block";
+
+  const container = el.parentElement || document.body;
+
+  while (el.scrollWidth > container.clientWidth && size > minFont) {
     size -= 1;
     el.style.fontSize = `${size}px`;
   }
 }
+
 
 
 function startLoveLoop() {
@@ -288,13 +293,13 @@ function startLoveLoop() {
 window.addEventListener("resize", () => {
   generateRows();
   const iloveEl = document.getElementById("ilove");
-  fitText(iloveEl, 180, 120);
+  fitText(iloveEl, 180, 30);
 });
 
 // Start observing changes on the element
 const iloveEl = document.getElementById("ilove");
 const resizeObserver = new ResizeObserver(() => {
-  fitText(iloveEl, 180, 120);
+  fitText(iloveEl, 180, 30);
 });
 resizeObserver.observe(iloveEl);
 document.addEventListener("DOMContentLoaded", () => {
