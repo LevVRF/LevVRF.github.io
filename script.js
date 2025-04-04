@@ -300,6 +300,7 @@ window.addEventListener("resize", () => {
 const iloveEl = document.getElementById("ilove");
 const resizeObserver = new ResizeObserver(() => {
   fitText(iloveEl, 150, 30);
+  
 });
 resizeObserver.observe(iloveEl);
 document.addEventListener("DOMContentLoaded", () => {
