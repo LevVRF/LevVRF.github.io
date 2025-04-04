@@ -249,7 +249,7 @@ function startHearts() {
 
   spawnRandomly();
 }
-function fitText(el, maxFont = 180, minFont = 30) {
+function fitText(el, maxFont = 150, minFont = 30) {
   let size = maxFont;
   el.style.fontSize = `${size}px`;
   el.style.whiteSpace = "nowrap";
@@ -293,13 +293,13 @@ function startLoveLoop() {
 window.addEventListener("resize", () => {
   generateRows();
   const iloveEl = document.getElementById("ilove");
-  fitText(iloveEl, 180, 30);
+  fitText(iloveEl, 150, 30);
 });
 
 // Start observing changes on the element
 const iloveEl = document.getElementById("ilove");
 const resizeObserver = new ResizeObserver(() => {
-  fitText(iloveEl, 180, 30);
+  fitText(iloveEl, 150, 30);
 });
 resizeObserver.observe(iloveEl);
 document.addEventListener("DOMContentLoaded", () => {
