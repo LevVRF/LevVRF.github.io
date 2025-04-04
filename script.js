@@ -258,10 +258,10 @@ function fitText(el, maxFont = 150, minFont = 30) {
   const container = el.parentElement || document.body;
 
   while (el.scrollWidth > container.clientWidth && size > minFont) {
-    console.log("Fitting Text- Last Size: " + el.style.fontSize);
+    // console.log("Fitting Text- Last Size: " + el.style.fontSize);
     size -= 2;
     el.style.fontSize = `${size}px`;
-    console.log("Fitting Text- New Size: " + el.style.fontSize);
+    // console.log("Fitting Text- New Size: " + el.style.fontSize);
   }
 }
 
