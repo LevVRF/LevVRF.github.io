@@ -300,9 +300,10 @@ window.addEventListener("resize", () => {
 const iloveEl = document.getElementById("ilove");
 const resizeObserver = new ResizeObserver(() => {
   fitText(iloveEl, 150, 30);
-  
+
 });
 resizeObserver.observe(iloveEl);
+
 document.addEventListener("DOMContentLoaded", () => {
   const urlParams = new URLSearchParams(window.location.search);
   const msg = urlParams.get("msg");
