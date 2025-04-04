@@ -249,15 +249,16 @@ function startHearts() {
 
   spawnRandomly();
 }
+
 function fitText(el, maxFont = 180, minFont = 120) {
   let size = maxFont;
   el.style.fontSize = `${size}px`;
-
-  while (el.scrollWidth > el.offsetWidth && size > minFont) {
+  while (el.scrollWidth > el.clientWidth && size > minFont) {
     size -= 1;
     el.style.fontSize = `${size}px`;
   }
 }
+
 
 function startLoveLoop() {
   const el = document.getElementById("ilove");
@@ -274,7 +275,7 @@ function startLoveLoop() {
       el.classList.remove("pop"); // reset class
       void el.offsetWidth;        // force reflow
       el.classList.add("pop");
-      
+
       fitText(el); // <-- resize if needed
     }, 500);
   }
@@ -283,8 +284,19 @@ function startLoveLoop() {
   updatePhrase(); // Show one immediately
   setInterval(updatePhrase, 3000); // Update every 5s
 }
-window.addEventListener("resize", generateRows);
 
+window.addEventListener("resize", () => {
+  generateRows();
+  const iloveEl = document.getElementById("ilove");
+  fitText(iloveEl, 180, 120);
+});
+
+// Start observing changes on the element
+const iloveEl = document.getElementById("ilove");
+const resizeObserver = new ResizeObserver(() => {
+  fitText(iloveEl, 180, 120);
+});
+resizeObserver.observe(iloveEl);
 document.addEventListener("DOMContentLoaded", () => {
   const urlParams = new URLSearchParams(window.location.search);
   const msg = urlParams.get("msg");
