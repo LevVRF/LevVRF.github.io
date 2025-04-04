@@ -32,22 +32,24 @@ body, html {
   
   #ilove {
     font-family: 'Great Vibes', 'Quicksand', sans-serif;
+    /* font-size: 6.5vw; */
     color: #ff4d6d;
-    text-shadow:
-      0 0 10px #ff4d6d,
-      0 0 20px #ff4d6d,
-      0 0 40px #ff4d6d;
+    text-align: center;
+    /* max-width: 90vw; */
+    margin: 0 auto;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    /* max-width: 100vw; */
-    text-align: center;
     display: inline-block;
-    margin: 0 auto;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+  
+    /* Better text glow for readability */
+    text-shadow:
+      0 0 4px #ff4d6d,
+      0 0 8px rgba(255, 77, 109, 0.6);
   }
   
   
+
   /* 💥 POP animation */
   .pop {
     animation: pop-in 0.5s ease;
