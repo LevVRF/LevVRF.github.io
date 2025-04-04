@@ -269,12 +269,13 @@ function startLoveLoop() {
       const phrase = lovePhrases[Math.floor(Math.random() * lovePhrases.length)];
       el.textContent = phrase;
       el.classList.remove("fade-out");
-      fitText(el); // <-- resize if needed
       
       // 💥 Trigger animation
       el.classList.remove("pop"); // reset class
       void el.offsetWidth;        // force reflow
       el.classList.add("pop");
+      
+      fitText(el); // <-- resize if needed
     }, 500);
   }
   
