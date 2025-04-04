@@ -138,7 +138,8 @@ const lovePhrases = [
   "Always yours. Always mine. Always us ♾️💑"
 ];
 
-
+// Start observing changes on the element
+const iloveEl = document.getElementById("ilove");
   
 let rowHeight = 0;
   
@@ -296,12 +297,11 @@ window.addEventListener("resize", () => {
   fitText(iloveEl, 150, 30);
 });
 
-// Start observing changes on the element
-const iloveEl = document.getElementById("ilove");
 const resizeObserver = new ResizeObserver(() => {
   fitText(iloveEl, 150, 30);
 
 });
+
 resizeObserver.observe(iloveEl);
 
 document.addEventListener("DOMContentLoaded", () => {
