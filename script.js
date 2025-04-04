@@ -165,7 +165,6 @@ function createScrollingRow(index, y) {
   // 🔀 Use a shuffled copy of the images
   const shuffledImages = shuffleArray(images);
   const imagesPerRow = images.length;
-  console.log(imagesPerRow);
   // ✨ Append images twice for seamless infinite loop
   for (let i = 0; i < imagesPerRow * 2; i++) {
       const img = document.createElement("img");
@@ -259,8 +258,10 @@ function fitText(el, maxFont = 150, minFont = 30) {
   const container = el.parentElement || document.body;
 
   while (el.scrollWidth > container.clientWidth && size > minFont) {
-    size -= 1;
+    console.log("Fitting Text- Last Size: " + el.style.fontSize);
+    size -= 2;
     el.style.fontSize = `${size}px`;
+    console.log("Fitting Text- New Size: " + el.style.fontSize);
   }
 }
 
