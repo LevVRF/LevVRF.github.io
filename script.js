@@ -78,6 +78,8 @@ function createScrollingRow(index, y) {
       const lightbox = document.getElementById("lightbox");
       const lightboxImg = document.getElementById("lightbox-img");
       lightboxImg.src = img.src;
+      lightboxImg.draggable = false;
+      lightboxImg.addEventListener("contextmenu", (e) => e.preventDefault());
       lightbox.classList.remove("hidden");
     });
 
