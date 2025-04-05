@@ -29,6 +29,7 @@ body, html {
     color: white;
     text-shadow: 0 0 15px rgba(255,255,255,0.8);
     margin-bottom: 1rem;
+    pointer-events: none;
   }
   
   #ilove {
@@ -42,6 +43,7 @@ body, html {
     overflow: visible;
     text-overflow: ellipsis;
     display: inline-block;
+    pointer-events: none;
   
     /* Better text glow for readability */
     text-shadow:
