@@ -39,7 +39,7 @@ body, html {
     /* max-width: 90vw; */
     margin: 0 auto;
     white-space: nowrap;
-    overflow: hidden;
+    overflow: visible;
     text-overflow: ellipsis;
     display: inline-block;
   
