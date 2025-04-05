@@ -2,7 +2,7 @@
 let lovePhrases = [];
 let images = [];
 
-const iloveEl = document.getElementById("ilove");
+var iloveEl;
 
 let rowHeight = 0;
 
@@ -166,17 +166,60 @@ window.addEventListener("resize", () => {
   fitText(iloveEl, 150, 30);
 });
 
-const resizeObserver = new ResizeObserver(() => {
-  fitText(iloveEl, 150, 30);
-
-});
-
-resizeObserver.observe(iloveEl);
 
 document.addEventListener("DOMContentLoaded", () => {
 
+  // Main love message
+  const main = document.createElement("div");
+  main.className = "main";
+
+  const title = document.createElement("h1");
+  title.id = "mylove";
+  title.textContent = "POOKIE";
+
+  const loveLine = document.createElement("p");
+  loveLine.id = "ilove";
+  loveLine.textContent = "I LOVE YOU 💖";
+
+
+  main.appendChild(title);
+  main.appendChild(loveLine);
+  document.body.appendChild(main);
+
+  iloveEl = document.getElementById("ilove");
+
+  const resizeObserver = new ResizeObserver(() => {
+    fitText(loveLine, 150, 30);  
+  });  
+
+  resizeObserver.observe(loveLine);
+
+  // Background image grid
+  const background = document.createElement("div");
+  background.className = "background";
+  document.body.appendChild(background);
+
+  // Hearts overlay container
+  const hearts = document.createElement("div");
+  hearts.className = "hearts-container";
+  document.body.appendChild(hearts);
+
+  // Lightbox for image zoom
+  const lightbox = document.createElement("div");
+  lightbox.id = "lightbox";
+  lightbox.classList.add("hidden");
+
+  const lightboxImg = document.createElement("img");
+  lightboxImg.id = "lightbox-img";
+  lightboxImg.alt = "Full Image";
+
+  lightbox.appendChild(lightboxImg);
+  document.body.appendChild(lightbox);
+
+
   fetchImagesAndStart();
   fetchPhrasesAndStart();
+
   // 👇 Close the lightbox when clicking outside the image
   document.getElementById("lightbox").addEventListener("click", () => {
     document.getElementById("lightbox").classList.add("hidden");
