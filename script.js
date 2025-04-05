@@ -74,6 +74,7 @@ function createScrollingRow(index, y) {
     img.src = "us/"+shuffledImages[i % shuffledImages.length];
     img.loading = "lazy";    
     img.draggable = false;
+    img.addEventListener("contextmenu", (e) => e.preventDefault());
     img.addEventListener("click", () => {
       const lightbox = document.getElementById("lightbox");
       const lightboxImg = document.getElementById("lightbox-img");
