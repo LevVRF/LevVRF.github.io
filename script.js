@@ -73,7 +73,7 @@ function createScrollingRow(index, y) {
     const img = document.createElement("img");
     img.src = "us/"+shuffledImages[i % shuffledImages.length];
     img.loading = "lazy";    
-
+    img.draggable = false;
     img.addEventListener("click", () => {
       const lightbox = document.getElementById("lightbox");
       const lightboxImg = document.getElementById("lightbox-img");
