@@ -1,148 +1,30 @@
-const images = [
-  "20240904_194805.jpg",
-  "20240904_194834.jpg",
-  "20240904_194926-COLLAGE.jpg",
-  "20240904_194926.jpg",
-  "20240904_223157.jpg",
-  "20240904_223304.jpg",
-  "20240913_101307.jpg",
-  "20250323_142640.jpg",
-  "20250323_142734.jpg",
-  "20250326_213040.jpg",
-  "20250328_234641.jpg",
-  "VideoCapture_20241102-201107.jpg",
-  "WhatsApp Image 2025-01-22 at 09.06.04.jpeg",
-  "WhatsApp Image 2025-02-07 at 20.04.21.jpeg",
-  "WhatsApp Image 2025-03-13 at 13.46.49.jpeg",
-  "WhatsApp Image 2025-03-23 at 14.56.25.jpeg",
-  "WhatsApp Image 2025-03-23 at 14.56.39.jpeg",
-  "WhatsApp Image 2025-03-23 at 14.56.43.jpeg",
-  "WhatsApp Image 2025-03-23 at 14.56.57.jpeg",
-  "WhatsApp Image 2025-03-23 at 14.56.59.jpeg",
-  "WhatsApp Image 2025-03-23 at 14.57.26.jpeg",
-  "WhatsApp Image 2025-03-23 at 14.57.31.jpeg",
-  "WhatsApp Image 2025-03-23 at 14.57.37.jpeg",
-  "WhatsApp Image 2025-03-23 at 14.57.44.jpeg",
-  "WhatsApp Image 2025-03-23 at 16.53.44.jpeg",
-  "WhatsApp Image 2025-03-27 at 17.33.06.jpeg",
-  "WhatsApp Image 2025-03-29 at 11.33.13.jpeg",
-  "WhatsApp Image 2025-03-30 at 09.46.35.jpeg",
-  "WhatsApp Image 2025-03-30 at 10.01.32.jpeg",
-  "WhatsApp Image 2025-03-30 at 10.04.18.jpeg",
-  "WhatsApp Image 2025-04-01 at 19.45.31.jpeg",
-  "WhatsApp Image 2025-04-01 at 20.52.48.jpeg",
-  "WhatsApp Image 2025-04-02 at 10.04.22.jpeg",
-  "WhatsApp Image 2025-04-03 at 23.48.51.jpeg"
-];
-const lovePhrases = [
-  "I love you more than words can say 💕",
-  "You're my everything 🌍",
-  "Forever isn't long enough with you ♾️❤️",
-  "Every moment with you is a gift 🎁",
-  "You're the light in my life 🌟",
-  "You're my heart's home 🏡💖",
-  "My love for you grows stronger every day 🌱💗",
-  "You're my favorite person 🥰",
-  "You complete me 🧩",
-  "You are the reason I smile 😄❤️",
-  "I'm so lucky to have you 🍀",
-  "You are my happy place ☁️💞",
-  "I could stare at you forever 👀😍",
-  "I fall in love with you again every day 🔁💘",
-  "With you, I am whole 💞",
-  "You make everything better ✨",
-  "You are my dream come true 🌈",
-  "You're the best part of me ❤️‍🔥",
-  "You are my person 💑",
-  "I'd choose you in every lifetime 🌌",
-  "You make my soul shine 🌞",
-  "I'm nothing without you 💔",
-  "I adore you more than coffee ☕❤️",
-  "I want you. Forever 🔐",
-  "You're the one I prayed for 🙏❤️",
-  "I still get butterflies 🦋",
-  "My heart beats for you 💓",
-  "You're my soulmate 🔗",
-  "You and I are meant to be 💫",
-  "You make the world beautiful 🌸",
-  "I'm yours, completely 💍",
-  "You are loved more than you know 💗",
-  "Every love song reminds me of you 🎶",
-  "I crave your smile 😊",
-  "You are my sweetest addiction 🍬💘",
-  "You + Me = Always 💑",
-  "My love, my life, my forever 💖",
-  "I'd cross the stars for you 🌠",
-  "You're my one and only 💎",
-  "You are the poetry in my life ✍️❤️",
-  "Just seeing you makes my day 🌞",
-  "You're the calm to my chaos 🌊🫶",
-  "I love your laugh 😂❤️",
-  "You're the reason my heart races 🏃💓",
-  "You're my daily miracle 🌟",
-  "You light up my darkest days 🕯️",
-  "You're the best decision I've ever made ✅❤️",
-  "You are my favorite hello and hardest goodbye 👋💔",
-  "I miss you when we're not together 🥺",
-  "You make my heart race 🏁💘",
-  "You're the sunshine of my soul ☀️🧡",
-  "Your love is my safe space 🛏️💖",
-  "I'm addicted to your love 💊💓",
-  "You're the song in my heart 🎵❤️",
-  "You're the stars in my night sky 🌌",
-  "You're the first person I think of every morning 🌅",
-  "You are my safe place 🛡️",
-  "You're my best friend and my love 💑👯‍♀️",
-  "Loving you is effortless 💆‍♂️💖",
-  "Your love is my forever favorite 💞",
-  "You're perfect to me 💯",
-  "You're my constant in a chaotic world 🌪️❤️",
-  "You are my joy, my peace, my home 🧘🏠",
-  "I can't wait to grow old with you 👴👵💘",
-  "You make life magical 🎩✨",
-  "You're my greatest adventure 🌍💫",
-  "You make love feel real 💌",
-  "You are my better half 🧡",
-  "Your love is the melody in my heart 🎼💖",
-  "With you, everything makes sense 🧠💗",
-  "Your voice is my favorite sound 🔊❤️",
-  "You make every day brighter 🌞🌼",
-  "I love the way you love me 💞",
-  "You're my love story 📖💕",
-  "I see forever in your eyes 👁️♾️",
-  "I never want to be without you 🚫😢",
-  "You're my comfort, my warmth, my light 🔥❤️",
-  "You make me believe in love again 💘🔁",
-  "I'm never letting you go 🫂",
-  "You're the reason I believe in soulmates 🌟",
-  "You're the best part of my life 🧸",
-  "You're the home my heart searched for 🏠💓",
-  "I'd write your name in the stars 🌠🖋️",
-  "You are my heart's desire 💗🔥",
-  "With you, I'm the happiest I've ever been 🥹💖",
-  "You're my muse, my love, my everything 🧠🎨❤️",
-  "You're the wish I never knew I made 🌠💭",
-  "I want a thousand lifetimes with you 🕰️♾️",
-  "You stole my heart — and I’m glad you did 🫶",
-  "You are my light in this world 💡🌍",
-  "You're my favorite person to fall asleep with 💤💑",
-  "I want to love you forever and a day 💘📅",
-  "I cherish every second with you ⏱️❤️",
-  "You're my reason to keep going 🛣️💗",
-  "You're my world 🌎💞",
-  "No one makes me feel like you do 🫀✨",
-  "You're magic. Real magic ✨🧙‍♂️",
-  "You're the smile in my soul 😁🫶",
-  "You’re the best part of every day ☀️❤️",
-  "I love you endlessly 🔁💓",
-  "Always yours. Always mine. Always us ♾️💑"
-];
 
-// Start observing changes on the element
+let lovePhrases = [];
+let images = [];
+
 const iloveEl = document.getElementById("ilove");
-  
+
 let rowHeight = 0;
-  
+
+function fetchImagesAndStart() {
+  fetch("us/images.json")
+    .then(res => res.json())
+    .then(data => {
+      images = data;
+      generateRows(); // kick off rendering
+    })
+    .catch(err => console.error("❌ Failed to load image list:", err));
+}
+
+function fetchPhrasesAndStart() {
+  fetch("us/phrases.json")
+    .then(res => res.json())
+    .then(data => {
+      lovePhrases = data;      
+      startLoveLoop(); // <-- start random phrases
+    })
+    .catch(err => console.error("❌ Failed to load image list:", err));
+}
 // 🔁 Shuffle function to randomize images per row
 function shuffleArray(array) {
   return array
@@ -183,7 +65,7 @@ function createScrollingRow(index, y) {
 
   return row;
 }
-  
+
 function generateRows() {
   const background = document.querySelector(".background");
   background.innerHTML = "";
@@ -202,17 +84,6 @@ function generateRows() {
     background.appendChild(row);
   }
 }
-  
-document.addEventListener("DOMContentLoaded", () => {
-  generateRows();
-  startHearts();
-  startLoveLoop();
-
-  // 👇 Close the lightbox when clicking outside the image
-  document.getElementById("lightbox").addEventListener("click", () => {
-    document.getElementById("lightbox").classList.add("hidden");
-  });
-});
 
 // 💖 Floating heart animation
 function spawnHeart() {
@@ -250,6 +121,7 @@ function startHearts() {
 
   spawnRandomly();
 }
+
 function fitText(el, maxFont = 150, minFont = 30) {
   let size = maxFont;
   el.style.fontSize = `${size}px`;
@@ -264,8 +136,6 @@ function fitText(el, maxFont = 150, minFont = 30) {
   }
 }
 
-
-
 function startLoveLoop() {
   const el = document.getElementById("ilove");
   if (!el) return;
@@ -277,23 +147,22 @@ function startLoveLoop() {
       el.textContent = phrase;
       el.classList.remove("fade-out");
       
+      fitText(el); // <-- resize if needed
+
       // 💥 Trigger animation
       el.classList.remove("pop"); // reset class
       void el.offsetWidth;        // force reflow
       el.classList.add("pop");
 
-      fitText(el); // <-- resize if needed
     }, 500);
-  }
-  
+  } 
 
   updatePhrase(); // Show one immediately
-  setInterval(updatePhrase, 3000); // Update every 5s
+  setInterval(updatePhrase, 3000); // Update every 3s
 }
 
 window.addEventListener("resize", () => {
   generateRows();
-  const iloveEl = document.getElementById("ilove");
   fitText(iloveEl, 150, 30);
 });
 
@@ -305,19 +174,16 @@ const resizeObserver = new ResizeObserver(() => {
 resizeObserver.observe(iloveEl);
 
 document.addEventListener("DOMContentLoaded", () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const msg = urlParams.get("msg");
 
-  if (msg) {
-    const el = document.getElementById("ilove");
-    if (el) {
-      el.textContent = decodeURIComponent(msg);
-    }
-  }
+  fetchImagesAndStart();
+  fetchPhrasesAndStart();
+  // 👇 Close the lightbox when clicking outside the image
+  document.getElementById("lightbox").addEventListener("click", () => {
+    document.getElementById("lightbox").classList.add("hidden");
+  });
 
-  generateRows();
   startHearts();
-  startLoveLoop(); // <-- start random phrases
+  
 });
   
   
