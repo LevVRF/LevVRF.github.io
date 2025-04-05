@@ -1,30 +1,48 @@
 
 let lovePhrases = [];
 let images = [];
-
+let updateInterval = 0;
 var iloveEl;
 
 let rowHeight = 0;
 
-function fetchImagesAndStart() {
-  fetch("us/images.json")
-    .then(res => res.json())
-    .then(data => {
-      images = data;
-      generateRows(); // kick off rendering
+function fetchAssetsAndStart() {
+  
+  iloveEl = document.getElementById("ilove");
+
+  const resizeObserver = new ResizeObserver(() => {
+    fitText(iloveEl, 150, 30);  
+  });  
+
+  resizeObserver.observe(iloveEl);
+
+  Promise.all([
+    fetch("us/images.json").then(res => res.json()),
+    fetch("us/phrases.json").then(res => res.json()),
+    fetch("settings.json").then(res => res.json())
+  ])
+    .then(([imagesData, phrasesData, settingsData]) => {
+      // 🌄 Set images and generate grid
+      images = imagesData;
+      generateRows();
+
+      // 💘 Set love phrases and start the loop
+      lovePhrases = phrasesData;
+      startLoveLoop();
+
+      // ⚙️ Load settings
+      updateInterval = (settingsData["PhraseUpdateInterval"] || 5) * 1000;
+      
+      // 👇 Close the lightbox when clicking outside the image
+      document.getElementById("lightbox").addEventListener("click", () => {
+        document.getElementById("lightbox").classList.add("hidden");
+      });
+
+      startHearts();
     })
-    .catch(err => console.error("❌ Failed to load image list:", err));
+    .catch(err => console.error("❌ Failed to load assets:", err));
 }
 
-function fetchPhrasesAndStart() {
-  fetch("us/phrases.json")
-    .then(res => res.json())
-    .then(data => {
-      lovePhrases = data;      
-      startLoveLoop(); // <-- start random phrases
-    })
-    .catch(err => console.error("❌ Failed to load image list:", err));
-}
 // 🔁 Shuffle function to randomize images per row
 function shuffleArray(array) {
   return array
@@ -185,15 +203,6 @@ document.addEventListener("DOMContentLoaded", () => {
   main.appendChild(title);
   main.appendChild(loveLine);
   document.body.appendChild(main);
-
-  iloveEl = document.getElementById("ilove");
-
-  const resizeObserver = new ResizeObserver(() => {
-    fitText(loveLine, 150, 30);  
-  });  
-
-  resizeObserver.observe(loveLine);
-
   // Background image grid
   const background = document.createElement("div");
   background.className = "background";
@@ -216,16 +225,8 @@ document.addEventListener("DOMContentLoaded", () => {
   lightbox.appendChild(lightboxImg);
   document.body.appendChild(lightbox);
 
+  fetchAssetsAndStart();
 
-  fetchImagesAndStart();
-  fetchPhrasesAndStart();
-
-  // 👇 Close the lightbox when clicking outside the image
-  document.getElementById("lightbox").addEventListener("click", () => {
-    document.getElementById("lightbox").classList.add("hidden");
-  });
-
-  startHearts();
   
 });
   
