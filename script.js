@@ -1,9 +1,8 @@
-
 let lovePhrases = [];
 let images = [];
 let updateInterval = 0;
+let rowOpacity;
 var iloveEl;
-
 let rowHeight = 0;
 
 function fetchAssetsAndStart() {
@@ -22,6 +21,11 @@ function fetchAssetsAndStart() {
     fetch("settings.json").then(res => res.json())
   ])
     .then(([imagesData, phrasesData, settingsData]) => {
+
+      // ⚙️ Load settings
+      updateInterval = (settingsData["PhraseUpdateInterval"] || 5) * 1000;
+      rowOpacity = settingsData["RowOpacity"] || 0.15;
+
       // 🌄 Set images and generate grid
       images = imagesData;
       generateRows();
@@ -30,9 +34,6 @@ function fetchAssetsAndStart() {
       lovePhrases = phrasesData;
       startLoveLoop();
 
-      // ⚙️ Load settings
-      updateInterval = (settingsData["PhraseUpdateInterval"] || 5) * 1000;
-      
       // 👇 Close the lightbox when clicking outside the image
       document.getElementById("lightbox").addEventListener("click", () => {
         document.getElementById("lightbox").classList.add("hidden");
@@ -59,26 +60,28 @@ function createScrollingRow(index, y) {
   const isEven = index % 2 === 0;
   const directionClass = isEven ? "scroll-right" : "scroll-left";
   row.classList.add(directionClass);
-  row.style.top = `${y}px`;
+  // row.style.top = `${y}px`;
   row.style.height = `${rowHeight}px`;
+  row.style.filter = `opacity(${rowOpacity})`
 
   // 🔀 Use a shuffled copy of the images
   const shuffledImages = shuffleArray(images);
   const imagesPerRow = images.length;
+
   // ✨ Append images twice for seamless infinite loop
   for (let i = 0; i < imagesPerRow * 2; i++) {
-      const img = document.createElement("img");
-      img.src = "us/"+shuffledImages[i % shuffledImages.length];
-      img.loading = "lazy";
-      row.appendChild(img);
-      
-      img.addEventListener("click", () => {
-        const lightbox = document.getElementById("lightbox");
-        const lightboxImg = document.getElementById("lightbox-img");
-        lightboxImg.src = img.src;
-        lightbox.classList.remove("hidden");
-      });
-      
+    const img = document.createElement("img");
+    img.src = "us/"+shuffledImages[i % shuffledImages.length];
+    img.loading = "lazy";    
+
+    img.addEventListener("click", () => {
+      const lightbox = document.getElementById("lightbox");
+      const lightboxImg = document.getElementById("lightbox-img");
+      lightboxImg.src = img.src;
+      lightbox.classList.remove("hidden");
+    });
+
+    row.appendChild(img);     
   }     
 
   return row;
@@ -99,6 +102,7 @@ function generateRows() {
   for (let i = 0; i < rows; i++) {
     const y = i * rowHeight;
     const row = createScrollingRow(i, y);
+    row.style.zIndex = 999;
     background.appendChild(row);
   }
 }
@@ -212,6 +216,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const hearts = document.createElement("div");
   hearts.className = "hearts-container";
   document.body.appendChild(hearts);
+
+  // Hearts overlay container
+  const float = document.createElement("div");
+  float.id = "float-container";
+  document.body.appendChild(float);
 
   // Lightbox for image zoom
   const lightbox = document.createElement("div");

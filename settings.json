@@ -1,3 +1,4 @@
 {
-    "PhraseUpdateInterval": 5
+    "PhraseUpdateInterval": 5,
+    "RowOpacity": 0.3
 }

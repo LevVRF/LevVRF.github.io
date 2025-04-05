@@ -86,15 +86,26 @@ body, html {
   
   /* Each row is positioned manually */
   .row {
-    position: absolute;
+    position: relative;
     display: flex;
     width: max-content;
     white-space: nowrap;
-    opacity: 0.15;
     animation-duration: 60s;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
+    overflow: visible;
   }
+
+  .row img {
+    height: 100%;
+    object-fit: cover;
+    margin-right: 4px;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    position: relative;
+  }
+
   /* Scroll animations */
   @keyframes scroll-left {
     0% { transform: translateX(0); }
@@ -115,7 +126,7 @@ body, html {
         animation: scroll-right 60s linear infinite;
     }
   
-  
+    
   /* 💕 Hearts */
   .hearts-container {
     position: fixed;
