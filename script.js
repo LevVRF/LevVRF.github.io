@@ -197,7 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const title = document.createElement("h1");
   title.id = "mylove";
-  title.textContent = "POOKIE";
+  title.textContent = "💖 POOKIE 💖";
 
   const loveLine = document.createElement("p");
   loveLine.id = "ilove";
