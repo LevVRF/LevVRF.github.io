@@ -169,6 +169,7 @@ function createScrollingRow(index, y) {
   for (let i = 0; i < imagesPerRow * 2; i++) {
       const img = document.createElement("img");
       img.src = "us/"+shuffledImages[i % shuffledImages.length];
+      img.loading = "lazy";
       row.appendChild(img);
       
       img.addEventListener("click", () => {
@@ -258,10 +259,8 @@ function fitText(el, maxFont = 150, minFont = 30) {
   const container = el.parentElement || document.body;
 
   while (el.scrollWidth > container.clientWidth && size > minFont) {
-    // console.log("Fitting Text- Last Size: " + el.style.fontSize);
     size -= 2;
     el.style.fontSize = `${size}px`;
-    // console.log("Fitting Text- New Size: " + el.style.fontSize);
   }
 }
 
