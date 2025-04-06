@@ -81,7 +81,9 @@ function createScrollingRow(index, y) {
       lightboxImg.src = img.src;
       lightboxImg.draggable = false;
       lightboxImg.addEventListener("contextmenu", (e) => e.preventDefault());
+      lightboxImg.addEventListener("touchstart", (e) => e.preventDefault());
       lightbox.addEventListener("contextmenu", (e) => e.preventDefault());
+      lightbox.addEventListener("touchstart", (e) => e.preventDefault());
       lightbox.classList.remove("hidden");
     });
 
