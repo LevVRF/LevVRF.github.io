@@ -24,24 +24,26 @@ body, html {
   }
   
   #mylove {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Love Ya Like A Sister', sans-serif;
     font-size: 8vw;
     color: white;
     text-shadow: 0 0 15px rgba(255,255,255,0.8);
     margin-bottom: 1rem;
+    pointer-events: none;
   }
   
   #ilove {
-    font-family: 'Great Vibes', 'Quicksand', sans-serif;
+    font-family: 'Love Light', sans-serif;
     /* font-size: 6.5vw; */
     color: #ff4d6d;
     text-align: center;
     /* max-width: 90vw; */
     margin: 0 auto;
     white-space: nowrap;
-    overflow: hidden;
+    overflow: visible;
     text-overflow: ellipsis;
     display: inline-block;
+    pointer-events: none;
   
     /* Better text glow for readability */
     text-shadow:

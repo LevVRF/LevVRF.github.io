@@ -73,11 +73,15 @@ function createScrollingRow(index, y) {
     const img = document.createElement("img");
     img.src = "us/"+shuffledImages[i % shuffledImages.length];
     img.loading = "lazy";    
-
+    img.draggable = false;
+    img.addEventListener("contextmenu", (e) => e.preventDefault());
     img.addEventListener("click", () => {
       const lightbox = document.getElementById("lightbox");
       const lightboxImg = document.getElementById("lightbox-img");
       lightboxImg.src = img.src;
+      lightboxImg.draggable = false;
+      lightboxImg.addEventListener("contextmenu", (e) => e.preventDefault());
+      lightbox.addEventListener("contextmenu", (e) => e.preventDefault());
       lightbox.classList.remove("hidden");
     });
 
@@ -197,7 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const title = document.createElement("h1");
   title.id = "mylove";
-  title.textContent = "POOKIE";
+  title.textContent = "💖 POOKIE 💖";
 
   const loveLine = document.createElement("p");
   loveLine.id = "ilove";
