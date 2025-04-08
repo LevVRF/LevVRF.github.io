@@ -111,9 +111,9 @@ function fetchAssetsAndStart() {
   .catch(err => console.error("❌ Failed to load assets:", err));
 }
 
-// Listen for CTRL+U to open settings
+// Listen for CTRL+L to open settings
 document.addEventListener("keydown", (e) => {
-  if (e.ctrlKey && e.key.toLowerCase() === "o") {
+  if (e.ctrlKey && e.key.toLowerCase() === "l") {
     e.preventDefault();
     showSettingsPanel();
   }
