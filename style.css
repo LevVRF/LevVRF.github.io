@@ -65,16 +65,7 @@ body, html {
       shine 3s infinite ease-in-out;
     pointer-events: none;
   }
-  
 
-  /* #mylove {
-    font-family: '', sans-serif;
-    font-size: 8vw;
-    color: white;
-    text-shadow: 0 0 15px rgba(255,255,255,0.8);
-    pointer-events: none;
-  } */
-  
   #ilove {
     position: relative;
     font-family: 'Love Light', sans-serif;
@@ -265,3 +256,48 @@ body, html {
     box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
   }
   
+#settings-panel {
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  background: rgba(20, 20, 20, 0.95);
+  color: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(255, 105, 135, 0.3);
+  font-family: sans-serif;
+  cursor: default;
+}
+
+.settings-inner h2 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.settings-buttons {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.settings-buttons button {
+  margin: 0 10px;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #ff4d6d;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.settings-buttons button:hover {
+  background-color: #ff6f91;
+}
+
+#settings-form label {
+  display: block;
+  margin-bottom: 1rem;
+}

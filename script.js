@@ -4,45 +4,120 @@ let updateInterval = 0;
 let rowOpacity;
 var iloveEl;
 let rowHeight = 0;
+let loveLoopInterval;
+let settingsData = {};
+// const backendUrl = "https://lovebackend.onrender.com/settings";
+const backendUrl = "http://localhost:3000/settings";
+
+function showSettingsPanel() {
+  if (document.getElementById("settings-panel")) return; // already open
+
+  const panel = document.createElement("div");
+  panel.id = "settings-panel";
+  panel.innerHTML = `<div class="settings-inner">
+    <h2>Settings</h2>
+    <form id="settings-form"></form>
+    <div class="settings-buttons">
+      <button type="button" id="apply-settings">Apply</button>
+      <button type="button" id="close-settings">Close</button>
+    </div>
+  </div>`;
+  document.body.appendChild(panel);
+
+  fetch(backendUrl)
+    .then(res => res.json())
+    .then(data => {
+      settingsData = data;
+      const form = document.getElementById("settings-form");
+      form.innerHTML = Object.entries(data).map(([key, value]) => {
+        return `<label>${key}: <input type="text" name="${key}" value="${value}"></label>`;
+      }).join("<br>");
+    });
+
+  document.getElementById("close-settings").onclick = () => {
+    panel.remove();
+  };
+  document.getElementById("apply-settings").onclick = () => {
+    const inputs = document.querySelectorAll("#settings-form input");
+    inputs.forEach(input => {
+      const key = input.name;
+      const value = input.value;
+      settingsData[key] = isNaN(value) ? value : Number(value);
+    });
+    applySettings(settingsData);
+    saveSettingsToFile(settingsData);
+    panel.remove();
+  };
+}
+
+function saveSettingsToFile(settings) {
+  localStorage.setItem("settings", JSON.stringify(settings));
+  fetch(backendUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(settings)
+  }).then(res => {
+    if (!res.ok) console.error("❌ Failed to save settings to backend");
+  });
+}
+
+function applySettings(settings) {
+  if ("PhraseUpdateInterval" in settings) {
+    updateInterval = settings["PhraseUpdateInterval"] * 1000;
+    if (loveLoopInterval) clearInterval(loveLoopInterval);
+    startLoveLoop();
+  }
+  if ("RowOpacity" in settings) {
+    rowOpacity = settings["RowOpacity"];
+    document.querySelectorAll(".row").forEach(row => {
+      row.style.filter = `opacity(${rowOpacity})`;
+    });
+  }
+}
 
 function fetchAssetsAndStart() {
-  
   iloveEl = document.getElementById("ilove");
 
   const resizeObserver = new ResizeObserver(() => {
-    fitText(iloveEl, 150, 30);  
-  });  
+    fitText(iloveEl, 150, 30);
+  });
 
   resizeObserver.observe(iloveEl);
 
   Promise.all([
     fetch("us/images.json").then(res => res.json()),
     fetch("us/phrases.json").then(res => res.json()),
-    fetch("settings.json").then(res => res.json())
+    fetch(backendUrl).then(res => res.json())
   ])
-    .then(([imagesData, phrasesData, settingsData]) => {
+  .then(([imagesData, phrasesData, settings]) => {
+    console.log(settings);
+    updateInterval = (settings["PhraseUpdateInterval"] || 5) * 1000;
+    rowOpacity = settings["RowOpacity"] || 0.15;
 
-      // ⚙️ Load settings
-      updateInterval = (settingsData["PhraseUpdateInterval"] || 5) * 1000;
-      rowOpacity = settingsData["RowOpacity"] || 0.15;
+    localStorage.setItem("settings", JSON.stringify(settings));
 
-      // 🌄 Set images and generate grid
-      images = imagesData;
-      generateRows();
+    images = imagesData;
+    generateRows();
 
-      // 💘 Set love phrases and start the loop
-      lovePhrases = phrasesData;
-      startLoveLoop();
+    lovePhrases = phrasesData;
+    startLoveLoop();
 
-      // 👇 Close the lightbox when clicking outside the image
-      document.getElementById("lightbox").addEventListener("click", () => {
-        document.getElementById("lightbox").classList.add("hidden");
-      });
+    document.getElementById("lightbox").addEventListener("click", () => {
+      document.getElementById("lightbox").classList.add("hidden");
+    });
 
-      startHearts();
-    })
-    .catch(err => console.error("❌ Failed to load assets:", err));
+    startHearts();
+  })
+  .catch(err => console.error("❌ Failed to load assets:", err));
 }
+
+// Listen for CTRL+U to open settings
+document.addEventListener("keydown", (e) => {
+  if (e.ctrlKey && e.key.toLowerCase() === "o") {
+    e.preventDefault();
+    showSettingsPanel();
+  }
+});
 
 // 🔁 Shuffle function to randomize images per row
 function shuffleArray(array) {
@@ -60,7 +135,6 @@ function createScrollingRow(index, y) {
   const isEven = index % 2 === 0;
   const directionClass = isEven ? "scroll-right" : "scroll-left";
   row.classList.add(directionClass);
-  // row.style.top = `${y}px`;
   row.style.height = `${rowHeight}px`;
   row.style.filter = `opacity(${rowOpacity})`
 
@@ -71,7 +145,7 @@ function createScrollingRow(index, y) {
   // ✨ Append images twice for seamless infinite loop
   for (let i = 0; i < imagesPerRow * 2; i++) {
     const img = document.createElement("img");
-    img.src = "us/"+shuffledImages[i % shuffledImages.length];
+    img.src = "us/" + shuffledImages[i % shuffledImages.length];
     img.loading = "lazy";    
     img.draggable = false;
     img.addEventListener("contextmenu", (e) => e.preventDefault());
@@ -172,7 +246,7 @@ function startLoveLoop() {
       const phrase = lovePhrases[Math.floor(Math.random() * lovePhrases.length)];
       el.textContent = phrase;
       el.classList.remove("fade-out");
-      
+
       fitText(el); // <-- resize if needed
 
       // 💥 Trigger animation
@@ -184,8 +258,9 @@ function startLoveLoop() {
   } 
 
   updatePhrase(); // Show one immediately
-  setInterval(updatePhrase, 3000); // Update every 3s
+  loveLoopInterval = setInterval(updatePhrase, updateInterval);
 }
+
 
 window.addEventListener("resize", () => {
   generateRows();
