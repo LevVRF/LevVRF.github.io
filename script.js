@@ -13,6 +13,7 @@ function showSettingsPanel() {
   if (document.getElementById("settings-panel")) return; // already open
 
   const panel = document.createElement("div");
+  panel.style.display = "none";
   panel.id = "settings-panel";
   panel.innerHTML = `<div class="settings-inner">
     <h2>Settings</h2>
@@ -32,6 +33,8 @@ function showSettingsPanel() {
       form.innerHTML = Object.entries(data).map(([key, value]) => {
         return `<label>${key}: <input type="text" name="${key}" value="${value}"></label>`;
       }).join("<br>");
+      
+      panel.style.display = "block";
     });
 
   document.getElementById("close-settings").onclick = () => {
