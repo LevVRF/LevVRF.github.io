@@ -6,7 +6,10 @@ var iloveEl;
 let rowHeight = 0;
 let loveLoopInterval;
 let settingsData = {};
+
 const backendUrl = "https://lovebackend.onrender.com/settings";
+const keepAliveUrl = "https://lovebackend.onrender.com/keepalive";
+
 // const backendUrl = "http://localhost:3000/settings";
 
 function showSettingsPanel() {
@@ -318,7 +321,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   fetchAssetsAndStart();
 
+  startKeepAlive();
+
   
 });
   
-  
+function startKeepAlive() {
+  setInterval(() => {
+    fetch(keepAliveUrl).catch(err =>
+      console.warn("⚠️ Keep-alive failed:", err)
+    );
+  }, 5 * 60 * 1000); // every 5 minutes
+}
+
+
