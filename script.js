@@ -6,8 +6,8 @@ var iloveEl;
 let rowHeight = 0;
 let loveLoopInterval;
 let settingsData = {};
-// const backendUrl = "https://lovebackend.onrender.com/settings";
-const backendUrl = "http://localhost:3000/settings";
+const backendUrl = "https://lovebackend.onrender.com/settings";
+// const backendUrl = "http://localhost:3000/settings";
 
 function showSettingsPanel() {
   if (document.getElementById("settings-panel")) return; // already open
