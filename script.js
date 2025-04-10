@@ -1,12 +1,13 @@
 let lovePhrases = [];
 let images = [];
+var iloveEl;
 let updateInterval = 0;
 let rowOpacity;
-var iloveEl;
+let heartBeatOn;
+let scrollSpeed;
 let rowHeight = 0;
 let loveLoopInterval;
 let settingsData = {};
-
 const backendUrl = "https://lovebackend.onrender.com/settings";
 const keepAliveUrl = "https://lovebackend.onrender.com/keepalive";
 
@@ -48,8 +49,11 @@ function showSettingsPanel() {
     inputs.forEach(input => {
       const key = input.name;
       const value = input.value;
-      settingsData[key] = isNaN(value) ? value : Number(value);
+      settingsData[key] = (value === "true") ? true :
+                          (value === "false") ? false :
+                          isNaN(value) ? value : Number(value);
     });
+
     applySettings(settingsData);
     saveSettingsToFile(settingsData);
     panel.remove();
@@ -57,7 +61,9 @@ function showSettingsPanel() {
 }
 
 function saveSettingsToFile(settings) {
-  localStorage.setItem("settings", JSON.stringify(settings));
+
+  setLocalStorage(settings);
+
   fetch(backendUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -65,22 +71,39 @@ function saveSettingsToFile(settings) {
   }).then(res => {
     if (!res.ok) console.error("❌ Failed to save settings to backend");
   });
+  
 }
 
 function applySettings(settings) {
+
   if ("PhraseUpdateInterval" in settings) {
     updateInterval = settings["PhraseUpdateInterval"] * 1000;
     if (loveLoopInterval) clearInterval(loveLoopInterval);
     startLoveLoop();
   }
+
   if ("RowOpacity" in settings) {
     rowOpacity = settings["RowOpacity"];
     document.querySelectorAll(".row").forEach(row => {
       row.style.filter = `opacity(${rowOpacity})`;
     });
   }
-}
 
+  if ("HeartBeat" in settings) {
+    heartBeatOn = settings["HeartBeat"];
+    toggleHeartbeat(heartBeatOn);
+  }
+
+  if ("ScrollSpeed" in settings) {
+    updateScrollSpeed(settings["ScrollSpeed"]);
+  }
+  
+}
+function setLocalStorage(settings) {
+  
+  localStorage.setItem("settings", JSON.stringify(settings));
+  
+}
 function fetchAssetsAndStart() {
   iloveEl = document.getElementById("ilove");
 
@@ -99,11 +122,18 @@ function fetchAssetsAndStart() {
     console.log(settings);
     updateInterval = (settings["PhraseUpdateInterval"] || 5) * 1000;
     rowOpacity = settings["RowOpacity"] || 0.15;
+    heartBeatOn = settings["HeartBeat"] || false;
+    scrollSpeed = settings["ScrollSpeed"] || 1;
 
-    localStorage.setItem("settings", JSON.stringify(settings));
+    setLocalStorage(settings);
+    
+
+    toggleHeartbeat(heartBeatOn);
+
 
     images = imagesData;
     generateRows();
+    updateScrollSpeed(scrollSpeed);
 
     lovePhrases = phrasesData;
     startLoveLoop();
@@ -116,14 +146,6 @@ function fetchAssetsAndStart() {
   })
   .catch(err => console.error("❌ Failed to load assets:", err));
 }
-
-// Listen for CTRL+L to open settings
-document.addEventListener("keydown", (e) => {
-  if (e.ctrlKey && e.key.toLowerCase() === "l") {
-    e.preventDefault();
-    showSettingsPanel();
-  }
-});
 
 // 🔁 Shuffle function to randomize images per row
 function shuffleArray(array) {
@@ -219,6 +241,7 @@ function spawnHeart() {
 }
 
 function startHearts() {
+
   function spawnRandomly() {
     spawnHeart();
     const delay = Math.random() * 100 + 20; // Between 200ms and 1200ms
@@ -267,15 +290,7 @@ function startLoveLoop() {
   loveLoopInterval = setInterval(updatePhrase, updateInterval);
 }
 
-
-window.addEventListener("resize", () => {
-  generateRows();
-  fitText(iloveEl, 150, 30);
-});
-
-
-document.addEventListener("DOMContentLoaded", () => {
-
+function generatePage() {  
   // Main love message
   const main = document.createElement("div");
   main.className = "main";
@@ -283,15 +298,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const title = document.createElement("h1");
   title.id = "mylove";
   title.textContent = "💖 POOKIE 💖";
+  title.classList.add("shine");
 
   const loveLine = document.createElement("p");
   loveLine.id = "ilove";
   loveLine.textContent = "I LOVE YOU 💖";
 
-
   main.appendChild(title);
   main.appendChild(loveLine);
   document.body.appendChild(main);
+
   // Background image grid
   const background = document.createElement("div");
   background.className = "background";
@@ -318,14 +334,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   lightbox.appendChild(lightboxImg);
   document.body.appendChild(lightbox);
+}
 
-  fetchAssetsAndStart();
-
-  startKeepAlive();
-
-  
-});
-  
 function startKeepAlive() {
   setInterval(() => {
     fetch(keepAliveUrl).catch(err =>
@@ -334,4 +344,48 @@ function startKeepAlive() {
   }, 5 * 60 * 1000); // every 5 minutes
 }
 
+function toggleHeartbeat(enable) {
+  const el = document.getElementById("mylove");
+  if (!el) return;
+  
+  if (enable) {
+    el.style.animation = "heartbeat 1.8s infinite ease-in-out, shine 3s infinite ease-in-out";
+  } else {
+    el.style.animation = "shine 3s infinite ease-in-out";
+  }
+}
 
+function updateScrollSpeed(multiplier) {
+  const baseSeconds = 60; // base duration
+  const duration = baseSeconds / multiplier;
+
+  document.querySelectorAll(".row").forEach(row => {
+    row.style.setProperty("--scroll-speed", `${duration}s`);
+  });
+}
+
+function parseBool(str) {
+  return str === "true";
+}
+
+
+/* ------------------------------------------------------------------------------------------------------------------- */
+
+window.addEventListener("resize", () => {
+  generateRows();
+  fitText(iloveEl, 150, 30);
+});
+
+document.addEventListener("DOMContentLoaded", () => {  
+  generatePage();
+  fetchAssetsAndStart();
+  startKeepAlive();  
+});
+
+// Listen for CTRL+L to open settings
+document.addEventListener("keydown", (e) => {
+  if (e.ctrlKey && e.key.toLowerCase() === "l") {
+    e.preventDefault();
+    showSettingsPanel();
+  }
+});
