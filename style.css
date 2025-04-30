@@ -296,6 +296,12 @@ html {
 	box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
 }
 
+#lightbox-video {
+	max-width: 90vw;
+	max-height: 90vh;
+	border-radius: 20px;
+	box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+}
 #settings-panel {
 	position: fixed;
 	top: 10%;

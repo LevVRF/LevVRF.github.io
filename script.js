@@ -9,15 +9,22 @@ let rowHeight = 0;
 let loveLoopInterval;
 let settingsData = {};
 
-const backend = "https://lovebackend.onrender.com";
-// const backend = "http://localhost:3000";
+
+const isDevelopment = window.location.hostname == "localhost" || window.location.hostname == "127.0.0.1";
+
+const config = {
+  backend: isDevelopment ? "http://localhost:3000" : "https://lovebackend.onrender.com",
+  backendUrl: isDevelopment ? "http://localhost:3000/settings" : "https://lovebackend.onrender.com/settings",
+  keepAliveUrl: isDevelopment ? "http://localhost:3000/keepalive" : "https://lovebackend.onrender.com/keepalive",
+  imagesUrl: isDevelopment ? "http://localhost:3000/images.json" : "https://lovebackend.onrender.com/images.json",
+};
+
+const backend = config.backend;
+const backendUrl = config.backendUrl;
+const keepAliveUrl = config.keepAliveUrl;
+const imagesUrl = config.imagesUrl;
 const apiUrl = "/api/pgdrive-image";
-const backendUrl = "https://lovebackend.onrender.com/settings";
-// const backendUrl = "http://localhost:3000/settings";
-const keepAliveUrl = "https://lovebackend.onrender.com/keepalive";
-// const keepAliveUrl = "http://localhost:3000/keepalive";
-const imagesUrl = "https://lovebackend.onrender.com/images.json";
-// const imagesUrl = "http://localhost:3000/images.json";
+const apiVideoUrl = "/api/pgdrive-video";
 
 function showSettingsPanel() {
   if (document.getElementById("settings-panel")) return; // already open
@@ -170,32 +177,69 @@ function createScrollingRow(index, y) {
   const directionClass = isEven ? "scroll-right" : "scroll-left";
   row.classList.add(directionClass);
   row.style.height = `${rowHeight}px`;
-  row.style.filter = `opacity(${rowOpacity})`
+  row.style.filter = `opacity(${rowOpacity})`;
 
-  // 🔀 Use a shuffled copy of the images
-  const shuffledImages = shuffleArray(images);
-  const imagesPerRow = images.length;
+  // 🔀 Use a shuffled copy of the images and videos
+  const shuffledFiles = shuffleArray(images); // `files` should include both images and videos
+  const filesPerRow = images.length;
 
-  // ✨ Append images twice for seamless infinite loop
-  for (let i = 0; i < imagesPerRow * 2; i++) {
-    const img = document.createElement("img");
+  // ✨ Append files twice for seamless infinite loop
+  for (let i = 0; i < filesPerRow * 2; i++) {
+    const file = shuffledFiles[i % shuffledFiles.length];
+    const fileType = file.mimeType.startsWith("image/") ? "image" : "video";
     
-    img.src = backend + apiUrl + "?fileId=" + shuffledImages[i % shuffledImages.length];
-    // img.loading = "lazy";    
-    img.draggable = false;
-    img.addEventListener("contextmenu", (e) => e.preventDefault());
-    img.addEventListener("click", () => {
-      const lightbox = document.getElementById("lightbox");
-      const lightboxImg = document.getElementById("lightbox-img");
-      lightboxImg.src = img.src;
-      lightboxImg.draggable = false;
-      lightboxImg.addEventListener("contextmenu", (e) => e.preventDefault());
-      lightbox.addEventListener("contextmenu", (e) => e.preventDefault());
-      lightbox.classList.remove("hidden");
-    });
-
-    row.appendChild(img);     
-  }     
+    if (fileType === "image") {
+      const img = document.createElement("img");
+      img.src = backend + apiUrl + "?fileId=" + file.id;
+      img.draggable = false;
+      img.addEventListener("contextmenu", (e) => e.preventDefault());
+      img.addEventListener("click", () => {
+        const lightbox = document.getElementById("lightbox");
+        const lightboxImg = document.createElement("img");
+        lightboxImg.classList.add("lightbox-image");
+        lightboxImg.src = img.src;
+        lightboxImg.draggable = false;
+        lightboxImg.addEventListener("contextmenu", (e) => e.preventDefault());
+        lightbox.addEventListener("contextmenu", (e) => e.preventDefault());
+        lightbox.classList.remove("hidden");
+        lightbox.appendChild(lightboxImg);
+        lightbox.addEventListener("click", () => {
+          lightbox.classList.add("hidden");
+          lightbox.removeChild(lightboxImg);
+        });
+      });
+      row.appendChild(img);
+    } else if (fileType === "video") {
+      const video = document.createElement("video");
+      video.src = backend + apiVideoUrl + "?fileId=" + file.id;
+      video.controls = false; // Add controls for videos
+      video.muted = true; // Mute videos by default
+      video.loop = true; // Loop videos
+      video.autoplay = true; // Autoplay videos
+      video.draggable = false;
+      video.addEventListener("contextmenu", (e) => e.preventDefault());
+      video.addEventListener("click", () => {
+        const lightbox = document.getElementById("lightbox");
+        const lightboxVideo = document.createElement("video");
+        lightboxVideo.classList.add("lightbox-video");
+        lightboxVideo.src = video.src;
+        lightboxVideo.controls = false; // Add controls for videos
+        lightboxVideo.muted = true; // Mute videos by default
+        lightboxVideo.loop = true; // Loop videos
+        lightboxVideo.autoplay = true; // Autoplay videos
+        lightboxVideo.draggable = false;
+        lightboxVideo.addEventListener("contextmenu", (e) => e.preventDefault());
+        lightbox.addEventListener("contextmenu", (e) => e.preventDefault());
+        lightbox.classList.remove("hidden");
+        lightbox.appendChild(lightboxVideo);
+        lightbox.addEventListener("click", () => {
+          lightbox.classList.add("hidden");
+          lightbox.removeChild(lightboxVideo);
+        });
+      });
+      row.appendChild(video);
+    }
+  }
 
   return row;
 }
@@ -335,11 +379,6 @@ function generatePage() {
   lightbox.id = "lightbox";
   lightbox.classList.add("hidden");
 
-  const lightboxImg = document.createElement("img");
-  lightboxImg.id = "lightbox-img";
-  lightboxImg.alt = "Full Image";
-
-  lightbox.appendChild(lightboxImg);
   document.body.appendChild(lightbox);
 }
 
