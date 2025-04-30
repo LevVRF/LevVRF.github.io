@@ -8,10 +8,16 @@ let scrollSpeed;
 let rowHeight = 0;
 let loveLoopInterval;
 let settingsData = {};
-const backendUrl = "https://lovebackend.onrender.com/settings";
-const keepAliveUrl = "https://lovebackend.onrender.com/keepalive";
 
+const backend = "https://lovebackend.onrender.com";
+// const backend = "http://localhost:3000";
+const apiUrl = "/api/pgdrive-image";
+const backendUrl = "https://lovebackend.onrender.com/settings";
 // const backendUrl = "http://localhost:3000/settings";
+const keepAliveUrl = "https://lovebackend.onrender.com/keepalive";
+// const keepAliveUrl = "http://localhost:3000/keepalive";
+const imagesUrl = "https://lovebackend.onrender.com/images.json";
+// const imagesUrl = "http://localhost:3000/images.json";
 
 function showSettingsPanel() {
   if (document.getElementById("settings-panel")) return; // already open
@@ -114,7 +120,7 @@ function fetchAssetsAndStart() {
   resizeObserver.observe(iloveEl);
 
   Promise.all([
-    fetch("us/images.json").then(res => res.json()),
+    fetch(imagesUrl).then(res => res.json()),
     fetch("us/phrases.json").then(res => res.json()),
     fetch(backendUrl).then(res => res.json())
   ])
@@ -173,8 +179,9 @@ function createScrollingRow(index, y) {
   // ✨ Append images twice for seamless infinite loop
   for (let i = 0; i < imagesPerRow * 2; i++) {
     const img = document.createElement("img");
-    img.src = "us/" + shuffledImages[i % shuffledImages.length];
-    img.loading = "lazy";    
+    
+    img.src = backend + apiUrl + "?fileId=" + shuffledImages[i % shuffledImages.length];
+    // img.loading = "lazy";    
     img.draggable = false;
     img.addEventListener("contextmenu", (e) => e.preventDefault());
     img.addEventListener("click", () => {
