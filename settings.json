@@ -1,4 +1,6 @@
 {
-    "PhraseUpdateInterval": 5,
-    "RowOpacity": 0.3
+    "PhraseUpdateInterval": 6,
+    "RowOpacity": 0.3,
+    "HeartBeat": true,
+    "ScrollSpeed": 1
 }

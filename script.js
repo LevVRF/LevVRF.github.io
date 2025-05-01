@@ -187,9 +187,8 @@ function createScrollingRow(index, y) {
   for (let i = 0; i < filesPerRow * 2; i++) {
     const file = shuffledFiles[i % shuffledFiles.length];
     const fileType = file.mimeType.startsWith("image/") ? "image" : "video";
-    
     if (fileType === "image") {
-      const img = document.createElement("img");
+      const img = document.createElement("img");  
       img.src = backend + apiUrl + "?fileId=" + file.id;
       img.draggable = false;
       img.addEventListener("contextmenu", (e) => e.preventDefault());
@@ -202,15 +201,18 @@ function createScrollingRow(index, y) {
         lightboxImg.addEventListener("contextmenu", (e) => e.preventDefault());
         lightbox.addEventListener("contextmenu", (e) => e.preventDefault());
         lightbox.classList.remove("hidden");
-        lightbox.appendChild(lightboxImg);
-        lightbox.addEventListener("click", () => {
-          lightbox.classList.add("hidden");
-          lightbox.removeChild(lightboxImg);
+        lightbox.addEventListener("click", (e) => {
+          if (e.target.firstElementChild === lightboxImg) {
+            lightbox.classList.add("hidden");
+            lightbox.removeChild(lightboxImg);
+          }
         });
+        lightbox.appendChild(lightboxImg);
       });
       row.appendChild(img);
     } else if (fileType === "video") {
-      const video = document.createElement("video");
+      const video = document.createElement("video");      
+      video.setAttribute("loading", "lazy");
       video.src = backend + apiVideoUrl + "?fileId=" + file.id;
       video.controls = false; // Add controls for videos
       video.muted = true; // Mute videos by default
@@ -231,11 +233,13 @@ function createScrollingRow(index, y) {
         lightboxVideo.addEventListener("contextmenu", (e) => e.preventDefault());
         lightbox.addEventListener("contextmenu", (e) => e.preventDefault());
         lightbox.classList.remove("hidden");
-        lightbox.appendChild(lightboxVideo);
-        lightbox.addEventListener("click", () => {
-          lightbox.classList.add("hidden");
-          lightbox.removeChild(lightboxVideo);
+        lightbox.addEventListener("click", (e) => {
+          if (e.target.firstElementChild === lightboxVideo) {
+            lightbox.classList.add("hidden");
+            lightbox.removeChild(lightboxVideo);
+          }
         });
+        lightbox.appendChild(lightboxVideo);
       });
       row.appendChild(video);
     }
