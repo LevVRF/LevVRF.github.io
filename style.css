@@ -29,7 +29,7 @@ html {
 #mylove {
 	position: relative;
 	font-size: clamp(4rem, 12vw, 16rem);
-	font-family: 'Love Ya Like A Sister', cursive;
+	font-family: 'Pacifico', cursive;
 	color: white;
 	text-align: center;
 	pointer-events: none;
@@ -83,7 +83,7 @@ html {
 
 #ilove {
 	position: relative;
-	font-family: 'Love Light', sans-serif;
+	font-family: 'Roboto', sans-serif;
 	color: #ff4d6d;
 	text-align: center;
 	white-space: nowrap;
