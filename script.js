@@ -145,6 +145,7 @@ function fetchAssetsAndStart() {
 
 
     images = imagesData;
+    preloadMediaElements();
     generateRows();
     updateScrollSpeed(scrollSpeed);
 
@@ -167,8 +168,38 @@ function shuffleArray(array) {
     .sort((a, b) => a.sort - b.sort)
     .map(({ value }) => value);
 }
+let currentLightboxMedia = null;
+let preloadedMedia = [];
 
-// 🔄 Create one row at a given y position
+function preloadMediaElements() {
+  preloadedMedia = images.map(file => {
+    console.log("started preloading", file);
+    const fileType = file.mimeType.startsWith("image/") ? "img" : "video";
+    const src = backend + (fileType === "img" ? apiUrl : apiVideoUrl) + "?fileId=" + file.id;
+
+
+    const el = document.createElement(fileType);
+    el.src = src;
+    el.draggable = false;
+    el.classList.add("media-thumb");
+
+    if (fileType === "video") {
+      el.controls = false;
+      el.muted = true;
+      el.loop = true;
+      el.autoplay = true;
+    }
+
+    // el.addEventListener("contextmenu", e => e.preventDefault());
+
+    // el.addEventListener("click", () => {
+    //   openLightbox(el);
+    // });
+
+    return el;
+  });
+}
+
 function createScrollingRow(index, y) {
   const row = document.createElement("div");
   row.classList.add("row");
@@ -179,74 +210,120 @@ function createScrollingRow(index, y) {
   row.style.height = `${rowHeight}px`;
   row.style.filter = `opacity(${rowOpacity})`;
 
-  // 🔀 Use a shuffled copy of the images and videos
-  const shuffledFiles = shuffleArray(images); // `files` should include both images and videos
+  const shuffledMedia = shuffleArray(preloadedMedia);
+  const filesPerRow = preloadedMedia.length;
+
+  for (let i = 0; i < filesPerRow * 2; i++) {
+    const original = shuffledMedia[i % shuffledMedia.length];
+    const clone = original.cloneNode(true);
+
+    if (clone.tagName.toLowerCase() === "video") {
+      clone.controls = false;
+      clone.muted = true;
+      clone.loop = true;
+      clone.autoplay = true;
+    }
+
+    clone.addEventListener("contextmenu", e => e.preventDefault());
+    clone.addEventListener("click", () => openLightbox(original));
+
+    row.appendChild(clone);
+  }
+
+  return row;
+}
+
+function openLightbox(mediaElement) {
+  const lightbox = document.getElementById("lightbox");
+  lightbox.innerHTML = "";
+  lightbox.classList.remove("hidden");
+
+  const clone = mediaElement.cloneNode(true);
+  clone.controls = true;
+  clone.muted = false;
+  clone.autoplay = true;
+  lightbox.appendChild(clone);
+
+  lightbox.onclick = () => {
+    lightbox.classList.add("hidden");
+    lightbox.innerHTML = "";
+  };
+
+  lightbox.addEventListener("contextmenu", (e) => e.preventDefault());
+}
+
+/*
+let currentLightboxMedia = null;
+
+function createScrollingRow(index, y) {
+  const row = document.createElement("div");
+  row.classList.add("row");
+
+  const isEven = index % 2 === 0;
+  const directionClass = isEven ? "scroll-right" : "scroll-left";
+  row.classList.add(directionClass);
+  row.style.height = `${rowHeight}px`;
+  row.style.filter = `opacity(${rowOpacity})`;
+
+  const shuffledFiles = shuffleArray(images);
   const filesPerRow = images.length;
 
-  // ✨ Append files twice for seamless infinite loop
   for (let i = 0; i < filesPerRow * 2; i++) {
     const file = shuffledFiles[i % shuffledFiles.length];
     const fileType = file.mimeType.startsWith("image/") ? "image" : "video";
+
     if (fileType === "image") {
-      const img = document.createElement("img");  
+      const img = document.createElement("img");
       img.src = backend + apiUrl + "?fileId=" + file.id;
       img.draggable = false;
       img.addEventListener("contextmenu", (e) => e.preventDefault());
+
       img.addEventListener("click", () => {
-        const lightbox = document.getElementById("lightbox");
-        const lightboxImg = document.createElement("img");
-        lightboxImg.classList.add("lightbox-image");
-        lightboxImg.src = img.src;
-        lightboxImg.draggable = false;
-        lightboxImg.addEventListener("contextmenu", (e) => e.preventDefault());
-        lightbox.addEventListener("contextmenu", (e) => e.preventDefault());
-        lightbox.classList.remove("hidden");
-        lightbox.addEventListener("click", (e) => {
-          if (e.target.firstElementChild === lightboxImg) {
-            lightbox.classList.add("hidden");
-            lightbox.removeChild(lightboxImg);
-          }
-        });
-        lightbox.appendChild(lightboxImg);
+        img.classList.add("lightbox-image");
+        openLightbox(img);
       });
+
       row.appendChild(img);
-    } else if (fileType === "video") {
-      const video = document.createElement("video");      
-      video.setAttribute("loading", "lazy");
+    } else {
+      const video = document.createElement("video");
       video.src = backend + apiVideoUrl + "?fileId=" + file.id;
-      video.controls = false; // Add controls for videos
-      video.muted = true; // Mute videos by default
-      video.loop = true; // Loop videos
-      video.autoplay = true; // Autoplay videos
+      video.controls = false;
+      video.muted = true;
+      video.loop = true;
+      video.autoplay = true;
       video.draggable = false;
       video.addEventListener("contextmenu", (e) => e.preventDefault());
+
       video.addEventListener("click", () => {
-        const lightbox = document.getElementById("lightbox");
-        const lightboxVideo = document.createElement("video");
-        lightboxVideo.classList.add("lightbox-video");
-        lightboxVideo.src = video.src;
-        lightboxVideo.controls = false; // Add controls for videos
-        lightboxVideo.muted = true; // Mute videos by default
-        lightboxVideo.loop = true; // Loop videos
-        lightboxVideo.autoplay = true; // Autoplay videos
-        lightboxVideo.draggable = false;
-        lightboxVideo.addEventListener("contextmenu", (e) => e.preventDefault());
-        lightbox.addEventListener("contextmenu", (e) => e.preventDefault());
-        lightbox.classList.remove("hidden");
-        lightbox.addEventListener("click", (e) => {
-          if (e.target.firstElementChild === lightboxVideo) {
-            lightbox.classList.add("hidden");
-            lightbox.removeChild(lightboxVideo);
-          }
-        });
-        lightbox.appendChild(lightboxVideo);
+        video.classList.add("lightbox-video");
+        openLightbox(video);
       });
+
       row.appendChild(video);
     }
   }
 
   return row;
 }
+
+function openLightbox(mediaElement) {
+  const lightbox = document.getElementById("lightbox");
+  lightbox.innerHTML = ""; // Clear existing content
+  lightbox.classList.remove("hidden");
+
+  // Clone the element so the original remains in the row (optional)
+  const clone = mediaElement.cloneNode(true);
+  clone.controls = true;
+  lightbox.appendChild(clone);
+
+  // Close lightbox on click anywhere
+  lightbox.onclick = () => {
+    lightbox.classList.add("hidden");
+    lightbox.innerHTML = "";
+  };
+
+  lightbox.addEventListener("contextmenu", (e) => e.preventDefault());
+} */
 
 function generateRows() {
   const background = document.querySelector(".background");
